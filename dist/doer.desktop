@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=Doer
+Comment=Persistent Notepad
+Exec=/usr/bin/doer
+Type=Application
+Terminal=false
+Icon=doer
+Categories=Qt;

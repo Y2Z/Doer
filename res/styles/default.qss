@@ -1,0 +1,6 @@
+QTextEdit,
+QPlainTextEdit {
+    color: #efefef;
+    background: #171717 url(:/images/background.png);
+    selection-background-color: rgba(255, 255, 55, 0.15);
+}
