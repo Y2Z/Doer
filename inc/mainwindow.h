@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QSystemTrayIcon>
 #include <QAction>
+#include <QSettings>
 
 #include "traymenu.h"
 
@@ -43,4 +44,5 @@ private:
 
     QSystemTrayIcon *trayIcon;
     TrayMenu *trayMenu;
+    QSettings *settings;
 };

@@ -45,18 +45,18 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadSettings()
 {
-    QSettings settings("doer", "doer");
+    settings = new QSettings("doer", "doer");
 
-    if (settings.contains("text")) {
-        QString content = settings.value("text").toString();
+    if (settings->contains("text")) {
+        QString content = settings->value("text").toString();
 
         ui->textArea->setText(content);
         ui->textArea->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
     }
 
-    if (settings.contains("geometry")) {
+    if (settings->contains("geometry")) {
         restoreGeometry(
-            QByteArray::fromHex(settings.value("geometry").toByteArray())
+            QByteArray::fromHex(settings->value("geometry").toByteArray())
         );
     }
 }
@@ -162,16 +162,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-   QSettings settings("doer", "doer");
-
-   settings.setValue("geometry", QString(saveGeometry().toHex()));
+   settings->setValue("geometry", QString(saveGeometry().toHex()));
 
    QMainWindow::resizeEvent(event);
 }
 
 void MainWindow::on_textArea_textChanged()
 {
-    QSettings settings("doer", "doer");
-
-    settings.setValue("text", ui->textArea->toPlainText());
+    settings->setValue("text", ui->textArea->toPlainText());
 }
