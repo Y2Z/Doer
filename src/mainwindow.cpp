@@ -152,7 +152,6 @@ void MainWindow::quit()
 {
     QSettings settings("doer", "doer");
 
-    settings.setValue("text", ui->textArea->toPlainText());
     settings.setValue("geometry", QString(saveGeometry().toHex()));
 
     QApplication::quit();
