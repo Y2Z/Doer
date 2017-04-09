@@ -16,7 +16,7 @@
         <widget class="QWidget" name="centralWidget">
             <layout class="QVBoxLayout" name="verticalLayout">
                 <item>
-                    <widget class="QTextEdit" name="textArea" />
+                    <widget class="QPlainTextEdit" name="textArea" />
                 </item>
             </layout>
         </widget>

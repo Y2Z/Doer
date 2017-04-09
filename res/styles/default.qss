@@ -1,4 +1,3 @@
-QTextEdit,
 QPlainTextEdit {
     color: #efefef;
     background: #171717 url(:/images/background.png);

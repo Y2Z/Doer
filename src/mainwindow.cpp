@@ -50,7 +50,7 @@ void MainWindow::loadSettings()
     if (settings->contains("text")) {
         QString content = settings->value("text").toString();
 
-        ui->textArea->setText(content);
+        ui->textArea->setPlainText(content);
         ui->textArea->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
     }
 
