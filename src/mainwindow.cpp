@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QMenu *menu = new QMenu { this };
 
-    menu->addAction(QString("Exit"), [&]()->void {
+    menu->addAction(QString("Quit"), [&]()->void {
         quit();
     });
 
