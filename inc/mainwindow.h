@@ -24,7 +24,6 @@ public slots:
 
 protected:
     void closeEvent(QCloseEvent *event);
-    void changeEvent(QEvent *event) override;
     void toggleHidden();
 
 private slots:

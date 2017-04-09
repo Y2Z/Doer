@@ -169,16 +169,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void MainWindow::changeEvent(QEvent *event)
-{
-    if (isMinimized() && event->type() == QEvent::WindowStateChange) {
-        event->ignore();
-        QTimer::singleShot(0, this, SLOT(hide()));
-    } else {
-        QMainWindow::changeEvent(event);
-    }
-}
-
 void MainWindow::on_textArea_textChanged()
 {
     QSettings settings("doer", "doer");
