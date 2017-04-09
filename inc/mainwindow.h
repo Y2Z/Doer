@@ -4,6 +4,8 @@
 #include <QSystemTrayIcon>
 #include <QAction>
 
+#include "traymenu.h"
+
 namespace Ui {
     class MainWindow;
 }
@@ -39,5 +41,6 @@ private:
 
     void loadSettings();
 
-    QSystemTrayIcon trayIcon;
+    QSystemTrayIcon *trayIcon;
+    TrayMenu *trayMenu;
 };

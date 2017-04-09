@@ -9,8 +9,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    trayIcon(QIcon(":/images/tray.png"), this)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -25,21 +24,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     bindShortcuts();
 
-    QObject::connect(&trayIcon, &QSystemTrayIcon::activated, this,
+    trayMenu = new TrayMenu(0);
+    trayIcon = new QSystemTrayIcon(0);
+    trayIcon->setContextMenu(trayMenu);
+    trayIcon->setIcon(QIcon(":/images/tray.png"));
+    trayIcon->show();
+
+    QObject::connect(trayIcon, &QSystemTrayIcon::activated, this,
                      [this](QSystemTrayIcon::ActivationReason reason) {
         if (reason == QSystemTrayIcon::Trigger) {
             toggleHidden();
         }
     });
-
-    QMenu *menu = new QMenu { this };
-
-    menu->addAction(QString("Quit"), [&]()->void {
-        quitApplication();
-    });
-
-    trayIcon.setContextMenu(menu);
-    trayIcon.show();
 }
 
 MainWindow::~MainWindow()

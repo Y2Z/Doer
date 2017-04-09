@@ -18,9 +18,11 @@ INCLUDEPATH += $${INC_DIR}
 
 SOURCES     += src/main.cpp \
                src/mainwindow.cpp \
+               src/traymenu.cpp \
                src/runguard.cpp
 
 HEADERS     += inc/mainwindow.h \
+               inc/traymenu.h \
                inc/runguard.h
 
 FORMS       += ui/mainwindow.ui
