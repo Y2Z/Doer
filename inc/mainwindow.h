@@ -24,7 +24,7 @@ public slots:
 
 protected:
     void closeEvent(QCloseEvent *event);
-    void changeEvent(QEvent* event) override;
+    void changeEvent(QEvent *event) override;
     void toggleHidden();
 
 private slots:
@@ -32,7 +32,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    void initialize();
     void bindShortcuts();
 
     void setIcon();

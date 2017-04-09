@@ -12,11 +12,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     trayIcon(QIcon(":/images/tray.png"), this)
 {
-    initialize();
-}
-
-void MainWindow::initialize()
-{
     ui->setupUi(this);
 
     loadSettings();
@@ -174,7 +169,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void MainWindow::changeEvent(QEvent* event)
+void MainWindow::changeEvent(QEvent *event)
 {
     if (isMinimized() && event->type() == QEvent::WindowStateChange) {
         event->ignore();
