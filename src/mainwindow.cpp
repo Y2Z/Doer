@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMenu *menu = new QMenu { this };
 
     menu->addAction(QString("Quit"), [&]()->void {
-        quit();
+        quitApplication();
     });
 
     trayIcon.setContextMenu(menu);
@@ -107,7 +107,7 @@ void MainWindow::bindShortcuts()
     QAction *quitAction = new QAction(this);
     quitAction->setShortcut(QKeySequence("Ctrl+Q"));
     addAction(quitAction);
-    connect(quitAction, SIGNAL(triggered()), this, SLOT(quit()));
+    connect(quitAction, SIGNAL(triggered()), this, SLOT(quitApplication()));
 }
 
 void MainWindow::toggleFullScreen()
@@ -148,12 +148,8 @@ void MainWindow::toggleHidden()
     }
 }
 
-void MainWindow::quit()
+void MainWindow::quitApplication()
 {
-    QSettings settings("doer", "doer");
-
-    settings.setValue("geometry", QString(saveGeometry().toHex()));
-
     QApplication::quit();
 }
 
@@ -164,8 +160,17 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
         QTimer::singleShot(0, this, SLOT(hide()));
     } else {
-        quit();
+        quitApplication();
     }
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+   QSettings settings("doer", "doer");
+
+   settings.setValue("geometry", QString(saveGeometry().toHex()));
+
+   QMainWindow::resizeEvent(event);
 }
 
 void MainWindow::on_textArea_textChanged()

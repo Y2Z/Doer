@@ -20,10 +20,11 @@ public slots:
     void toggleFullScreen();
     void exitFullScreen();
     void exitFullScreenOrHide();
-    void quit();
+    void quitApplication();
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void resizeEvent(QResizeEvent *event) override;
     void toggleHidden();
 
 private slots:
