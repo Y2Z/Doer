@@ -36,6 +36,8 @@ MainWindow::MainWindow(QWidget *parent) :
             toggleHidden();
         }
     });
+
+    ready = true;
 }
 
 MainWindow::~MainWindow()
@@ -51,7 +53,20 @@ void MainWindow::loadSettings()
         QString content = settings->value("text").toString();
 
         ui->textArea->setPlainText(content);
-        ui->textArea->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+    }
+
+    if (settings->contains("cursor")) {
+        int cursorPosition = settings->value("cursor").toInt();
+        QTextCursor newCursor = ui->textArea->textCursor();
+
+        newCursor.setPosition(cursorPosition);
+
+        if (settings->contains("cursor_end")) {
+            int cursorPositionEnd = settings->value("cursor_end").toInt();
+            newCursor.setPosition(cursorPositionEnd, QTextCursor::KeepAnchor);
+        }
+
+        ui->textArea->setTextCursor(newCursor);
     }
 
     if (settings->contains("geometry")) {
@@ -162,12 +177,28 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-   settings->setValue("geometry", QString(saveGeometry().toHex()));
+    if (ready) {
+        settings->setValue("geometry", QString(saveGeometry().toHex()));
+    }
 
-   QMainWindow::resizeEvent(event);
+    QMainWindow::resizeEvent(event);
 }
 
 void MainWindow::on_textArea_textChanged()
 {
-    settings->setValue("text", ui->textArea->toPlainText());
+    if (ready) {
+        settings->setValue("text", ui->textArea->toPlainText());
+    }
+}
+
+void MainWindow::on_textArea_cursorPositionChanged()
+{
+    if (ready) {
+        QTextCursor currCursor = ui->textArea->textCursor();
+        int currCursorSelStart = currCursor.selectionStart();
+        int currCursorSelEnd = currCursor.selectionEnd();
+
+        settings->setValue("cursor", currCursorSelStart);
+        settings->setValue("cursor_end", currCursorSelEnd);
+    }
 }

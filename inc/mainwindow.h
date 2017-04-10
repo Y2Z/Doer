@@ -30,19 +30,22 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
     void toggleHidden();
 
+    bool ready = false;
+
 private slots:
     void on_textArea_textChanged();
+    void on_textArea_cursorPositionChanged();
 
 private:
     Ui::MainWindow *ui;
+    QSettings *settings;
+    QSystemTrayIcon *trayIcon;
+    TrayMenu *trayMenu;
+
     void bindShortcuts();
 
     void setIcon();
     void setStyle();
 
     void loadSettings();
-
-    QSystemTrayIcon *trayIcon;
-    TrayMenu *trayMenu;
-    QSettings *settings;
 };
