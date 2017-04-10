@@ -67,6 +67,7 @@ void MainWindow::loadSettings()
         }
 
         ui->textArea->setTextCursor(newCursor);
+        ui->textArea->ensureCursorVisible() ;
     }
 
     if (settings->contains("geometry")) {
