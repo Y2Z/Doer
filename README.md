@@ -38,6 +38,6 @@ Use [default.qss](res/styles/default.qss) as a reference.
     sudo make uninstall
 
 
-## Licensing
+## License
 
 This is free and unencumbered software released into the public domain.
