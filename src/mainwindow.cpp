@@ -2,7 +2,7 @@
 #include <QCloseEvent>
 #include <QShortcut>
 #include <QTimer>
-#include <QMenu>
+#include <QFileInfo>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -87,11 +87,20 @@ void MainWindow::setIcon()
 
 void MainWindow::setStyle()
 {
-    QFile file(":/styles/default.qss");
+    QString styleSheet;
 
-    file.open(QFile::ReadOnly);
+    QFile styleFile(":/styles/default.qss");
+    styleFile.open(QFile::ReadOnly);
+    styleSheet = QLatin1String(styleFile.readAll());
+    styleFile.close();
 
-    QString styleSheet = QLatin1String(file.readAll());
+    QFileInfo settingsFileInfo(settings->fileName());
+    QFile customStyleFile(settingsFileInfo.absolutePath() + "/doer.qss");
+    if (customStyleFile.open(QFile::ReadOnly)) {
+        puts("путц");
+        styleSheet += QLatin1String(customStyleFile.readAll());
+        customStyleFile.close();
+    }
 
     ui->textArea->setStyleSheet(styleSheet);
 }
