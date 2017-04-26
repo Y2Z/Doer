@@ -47,7 +47,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::loadSettings()
 {
-    settings = new QSettings("doer", "doer");
+    settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
+                             "doer", "doer", nullptr);
 
     if (settings->contains("text")) {
         QString content = settings->value("text").toString();
