@@ -11,5 +11,6 @@ public:
     ~TrayMenu();
 
 private:
+    QAction *toggleAction;
     QAction *quitAction;
 };

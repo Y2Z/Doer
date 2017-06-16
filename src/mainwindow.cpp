@@ -7,6 +7,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -24,8 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     bindShortcuts();
 
-    trayMenu = new TrayMenu(0);
-    trayIcon = new QSystemTrayIcon(0);
+    trayMenu = new TrayMenu(this);
+    trayIcon = new QSystemTrayIcon(this);
     trayIcon->setContextMenu(trayMenu);
     trayIcon->setIcon(QIcon(":/images/tray.png"));
     trayIcon->show();
@@ -97,7 +98,6 @@ void MainWindow::setStyle()
     QFileInfo settingsFileInfo(settings->fileName());
     QFile customStyleFile(settingsFileInfo.absolutePath() + "/doer.qss");
     if (customStyleFile.open(QFile::ReadOnly)) {
-        puts("путц");
         styleSheet += QLatin1String(customStyleFile.readAll());
         customStyleFile.close();
     }
