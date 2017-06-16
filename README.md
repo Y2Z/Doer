@@ -6,7 +6,7 @@ With almost no user interface it works great as a place to keep your notes in.
 It was built to replace a giant collection of small paper notes scattered all over my workspace and home.  
 Comes in handy as a to-do list. Can also help you keep those pretty Japanese smileys at hand.
 
-![Doer](https://cloud.githubusercontent.com/assets/1392048/24592087/2bcfb58e-17de-11e7-8c22-27a804c2f0f0.png)
+![screenshot](https://cloud.githubusercontent.com/assets/1392048/24592087/2bcfb58e-17de-11e7-8c22-27a804c2f0f0.png)
 
 
 ## Customize
@@ -36,11 +36,6 @@ Use [default.qss](res/styles/default.qss) as a reference.
 ## Uninstall
 
     sudo make uninstall
-
-
-## Requirements
-
-    qtbase5-dev
 
 
 ## License
