@@ -161,6 +161,12 @@ void MainWindow::toggleHidden()
                 hide();
             });
         } else {
+            if (isMinimized()) {
+                setWindowState(
+                    (windowState() & ~Qt::WindowMinimized) | Qt::WindowActive
+                );
+                raise();
+            }
             activateWindow();
         }
     } else {
