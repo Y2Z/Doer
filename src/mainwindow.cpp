@@ -111,25 +111,29 @@ void MainWindow::bindShortcuts()
     QAction *fullScreenAction = new QAction(this);
     fullScreenAction->setShortcut(QKeySequence("Ctrl+F"));
     addAction(fullScreenAction);
-    connect(fullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
+    connect(fullScreenAction, SIGNAL(triggered()),
+            this, SLOT(toggleFullScreen()));
 
     // Connect the fullscreen shortcut (F11)
     QAction *fullScreenAction2 = new QAction(this);
     fullScreenAction2->setShortcut(QKeySequence(Qt::Key_F11));
     addAction(fullScreenAction2);
-    connect(fullScreenAction2, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
+    connect(fullScreenAction2, SIGNAL(triggered()),
+            this, SLOT(toggleFullScreen()));
 
     // Connect the fullscreen exit shortcut (Esc)
     QAction *fullScreenExitAction = new QAction(this);
     fullScreenExitAction->setShortcut(QKeySequence(Qt::Key_Escape));
     addAction(fullScreenExitAction);
-    connect(fullScreenExitAction, SIGNAL(triggered()), this, SLOT(exitFullScreenOrHide()));
+    connect(fullScreenExitAction, SIGNAL(triggered()),
+            this, SLOT(exitFullScreenOrHide()));
 
     // Connect the quit shortcut (Ctrl+Q)
     QAction *quitAction = new QAction(this);
     quitAction->setShortcut(QKeySequence("Ctrl+Q"));
     addAction(quitAction);
-    connect(quitAction, SIGNAL(triggered()), this, SLOT(quitApplication()));
+    connect(quitAction, SIGNAL(triggered()),
+            this, SLOT(quitApplication()));
 }
 
 void MainWindow::toggleFullScreen()

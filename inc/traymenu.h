@@ -2,6 +2,7 @@
 
 #include <QMenu>
 
+
 class TrayMenu : public QMenu
 {
     Q_OBJECT
