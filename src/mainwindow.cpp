@@ -156,9 +156,13 @@ void MainWindow::exitFullScreenOrHide()
 void MainWindow::toggleHidden()
 {
     if (isVisible()) {
-        QTimer::singleShot(0, this, [this]() {
-            hide();
-        });
+        if (isActiveWindow()) {
+            QTimer::singleShot(0, this, [this]() {
+                hide();
+            });
+        } else {
+            activateWindow();
+        }
     } else {
         QTimer::singleShot(0, this, [this]() {
             ensurePolished();
