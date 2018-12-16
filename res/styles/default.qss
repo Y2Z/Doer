@@ -3,3 +3,28 @@ QPlainTextEdit {
     background: #171717 url(:/images/background.png);
     selection-background-color: rgba(255, 255, 55, 0.15);
 }
+
+QScrollBar:vertical {
+    border: none;
+    background: deeppink;
+    width: 11px;
+    margin: 0;
+}
+QScrollBar::handle:vertical {
+    background: rgba(0, 0, 0, 0.67);
+    min-height: 0;
+    border-radius: 4px;
+    margin: 1px;
+}
+QScrollBar::add-line:vertical {
+    background: transparent;
+    height: 0;
+    subcontrol-position: bottom;
+    subcontrol-origin: margin;
+}
+QScrollBar::sub-line:vertical {
+    background: transparent;
+    height: 0;
+    subcontrol-position: top;
+    subcontrol-origin: margin;
+}
