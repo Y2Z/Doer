@@ -6,7 +6,6 @@ QPlainTextEdit {
 
 QScrollBar:vertical {
     border: none;
-    background: deeppink;
     width: 11px;
     margin: 0;
 }
