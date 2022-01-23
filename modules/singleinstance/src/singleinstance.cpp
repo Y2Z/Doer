@@ -85,8 +85,33 @@ void SingleInstance::raiseWindow(QWidget *window)
             if (XGetWindowAttributes(disp, winId, &attributes)) {
                 XSetInputFocus(disp, winId, RevertToPointerRoot, CurrentTime);
                 XRaiseWindow(disp, winId);
+
+                // Show window if minimized, instead of just highlighting its icon
+                {
+                    const Atom atom = XInternAtom(disp, "_NET_ACTIVE_WINDOW", True);
+
+                    if (atom != None) {
+                        XEvent xev;
+
+                        xev.xclient.type = ClientMessage;
+                        xev.xclient.serial = 0;
+                        xev.xclient.send_event = True;
+                        xev.xclient.message_type = atom;
+                        xev.xclient.display = disp;
+                        xev.xclient.window = winId;
+                        xev.xclient.format = 32;
+                        xev.xclient.data.l[0] = 1;
+                        xev.xclient.data.l[1] = 0;
+                        xev.xclient.data.l[2] = None;
+                        xev.xclient.data.l[3] = 0;
+                        xev.xclient.data.l[4] = 0;
+
+                        XSendEvent(disp, DefaultRootWindow(disp), False, SubstructureRedirectMask | SubstructureNotifyMask, &xev);
+                    }
+                }
             }
 
+            XFlush(disp);
             XCloseDisplay(disp);
         }
     }
