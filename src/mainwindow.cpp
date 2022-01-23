@@ -1,70 +1,79 @@
-#include <QSettings>
 #include <QCloseEvent>
-#include <QShortcut>
-#include <QTimer>
+#include <QDir>
+#include <QFile>
 #include <QFileInfo>
+#include <QShortcut>
+#include <QSettings>
 
-#include "mainwindow.h"
+#include "mainwindow.hpp"
 #include "ui_mainwindow.h"
 
-
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QString *progName = new QString(PROG_NAME);
+    singleInstance = new SingleInstance((QWidget*)this, progName);
 
     loadSettings();
 
     setMinimumSize(240, 360);
+    setWindowIcon(QIcon(":/images/" PROG_NAME ".svg"));
 
-    setIcon();
-
-    setStyle();
+    applyStyle();
     ui->textArea->setFrameStyle(QFrame::NoFrame);
 
     bindShortcuts();
 
-    trayMenu = new TrayMenu(this);
-    trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setContextMenu(trayMenu);
-    trayIcon->setIcon(QIcon(":/images/tray.png"));
-    trayIcon->show();
-
-    QObject::connect(trayIcon, &QSystemTrayIcon::activated, this,
-                     [this](QSystemTrayIcon::ActivationReason reason) {
-        if (reason == QSystemTrayIcon::Trigger) {
-            toggleHidden();
-        }
-    });
-
     ready = true;
 }
 
-MainWindow::~MainWindow()
+MainWindow::~MainWindow(void)
 {
     delete ui;
 }
 
-void MainWindow::loadSettings()
+void MainWindow::applyStyle(void)
 {
-    settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
-                             "doer", "doer", nullptr);
+    QString styleSheet;
+
+    QFile styleFile(":/stylesheets/" PROG_NAME ".qss");
+    styleFile.open(QFile::ReadOnly);
+    styleSheet = QLatin1String(styleFile.readAll());
+    styleFile.close();
+
+    QFileInfo settingsFileInfo(settings->fileName());
+    QFile customStyleFile(settingsFileInfo.absolutePath() + QDir::separator() + PROG_NAME ".qss");
+    if (customStyleFile.open(QFile::ReadOnly)) {
+        styleSheet += QLatin1String(customStyleFile.readAll());
+        customStyleFile.close();
+    }
+
+    ui->textArea->setStyleSheet(styleSheet);
+}
+
+void MainWindow::loadSettings(void)
+{
+    settings = new QSettings(QSettings::IniFormat,
+                             QSettings::UserScope,
+                             PROG_NAME,
+                             PROG_NAME,
+                             nullptr);
 
     if (settings->contains("text")) {
-        QString content = settings->value("text").toString();
+        const QString content = settings->value("text").toString();
 
         ui->textArea->setPlainText(content);
     }
 
     if (settings->contains("cursor")) {
-        int cursorPosition = settings->value("cursor").toInt();
+        const int cursorPosition = settings->value("cursor").toInt();
         QTextCursor newCursor = ui->textArea->textCursor();
 
         newCursor.setPosition(cursorPosition);
 
         if (settings->contains("cursor_end")) {
-            int cursorPositionEnd = settings->value("cursor_end").toInt();
+            const int cursorPositionEnd = settings->value("cursor_end").toInt();
             newCursor.setPosition(cursorPositionEnd, QTextCursor::KeepAnchor);
         }
 
@@ -79,151 +88,101 @@ void MainWindow::loadSettings()
     }
 }
 
-void MainWindow::setIcon()
-{
-    QIcon windowIcon(":/images/doer.svg");
-
-    setWindowIcon(windowIcon);
-}
-
-void MainWindow::setStyle()
-{
-    QString styleSheet;
-
-    QFile styleFile(":/styles/default.qss");
-    styleFile.open(QFile::ReadOnly);
-    styleSheet = QLatin1String(styleFile.readAll());
-    styleFile.close();
-
-    QFileInfo settingsFileInfo(settings->fileName());
-    QFile customStyleFile(settingsFileInfo.absolutePath() + "/doer.qss");
-    if (customStyleFile.open(QFile::ReadOnly)) {
-        styleSheet += QLatin1String(customStyleFile.readAll());
-        customStyleFile.close();
-    }
-
-    ui->textArea->setStyleSheet(styleSheet);
-}
-
-void MainWindow::bindShortcuts()
+void MainWindow::bindShortcuts(void)
 {
     // Connect the fullscreen shortcut (Ctrl+F)
     QAction *fullScreenAction = new QAction(this);
     fullScreenAction->setShortcut(QKeySequence("Ctrl+F"));
     addAction(fullScreenAction);
-    connect(fullScreenAction, SIGNAL(triggered()),
-            this, SLOT(toggleFullScreen()));
+    connect(fullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
 
     // Connect the fullscreen shortcut (F11)
     QAction *fullScreenAction2 = new QAction(this);
     fullScreenAction2->setShortcut(QKeySequence(Qt::Key_F11));
     addAction(fullScreenAction2);
-    connect(fullScreenAction2, SIGNAL(triggered()),
-            this, SLOT(toggleFullScreen()));
+    connect(fullScreenAction2, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
 
     // Connect the fullscreen exit shortcut (Esc)
     QAction *fullScreenExitAction = new QAction(this);
     fullScreenExitAction->setShortcut(QKeySequence(Qt::Key_Escape));
     addAction(fullScreenExitAction);
-    connect(fullScreenExitAction, SIGNAL(triggered()),
-            this, SLOT(exitFullScreenOrHide()));
+    connect(fullScreenExitAction, SIGNAL(triggered()), this, SLOT(exitFullScreen()));
 
     // Connect the quit shortcut (Ctrl+Q)
     QAction *quitAction = new QAction(this);
     quitAction->setShortcut(QKeySequence("Ctrl+Q"));
     addAction(quitAction);
-    connect(quitAction, SIGNAL(triggered()),
-            this, SLOT(quitApplication()));
+    connect(quitAction, SIGNAL(triggered()), this, SLOT(quitApplication()));
 }
 
-void MainWindow::toggleFullScreen()
-{
-    if (isFullScreen())
-        setWindowState(windowState() & ~Qt::WindowFullScreen);
-    else
-        setWindowState(windowState() | Qt::WindowFullScreen);
-}
-
-void MainWindow::exitFullScreen()
+void MainWindow::exitFullScreen(void)
 {
     setWindowState(windowState() & ~Qt::WindowFullScreen);
 }
 
-void MainWindow::exitFullScreenOrHide()
-{
-    if (isFullScreen())
-        setWindowState(windowState() & ~Qt::WindowFullScreen);
-    else
-        QTimer::singleShot(0, this, SLOT(hide()));
-}
-
-void MainWindow::toggleHidden()
-{
-    if (isVisible()) {
-        if (isActiveWindow()) {
-            QTimer::singleShot(0, this, [this]() {
-                hide();
-            });
-        } else {
-            if (isMinimized()) {
-                setWindowState(
-                    (windowState() & ~Qt::WindowMinimized) | Qt::WindowActive
-                );
-                raise();
-            }
-            activateWindow();
-        }
-    } else {
-        QTimer::singleShot(0, this, [this]() {
-            ensurePolished();
-            setWindowState(windowState() & ~Qt::WindowMinimized);
-            show();
-            raise();
-            activateWindow();
-        });
-    }
-}
-
-void MainWindow::quitApplication()
-{
-    QApplication::quit();
-}
-
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if (isVisible()) {
-        event->ignore();
+    quitApplication();
 
-        QTimer::singleShot(0, this, SLOT(hide()));
-    } else {
-        quitApplication();
+    QMainWindow::closeEvent(event);
+}
+
+void MainWindow::moveEvent(QMoveEvent *event)
+{
+    windowGeometry = saveGeometry();
+
+    QMainWindow::moveEvent(event);
+}
+
+void MainWindow::on_textArea_cursorPositionChanged(void)
+{
+    if (ready) {
+        const QTextCursor currCursor = ui->textArea->textCursor();
+        const int currCursorSelStart = currCursor.selectionStart();
+        const int currCursorSelEnd = currCursor.selectionEnd();
+
+        settings->setValue("cursor", currCursorSelStart);
+        settings->setValue("cursor_end", currCursorSelEnd);
+        settings->sync();
     }
+}
+
+void MainWindow::on_textArea_textChanged(void)
+{
+    if (ready) {
+        settings->setValue("text", ui->textArea->toPlainText());
+        settings->sync();
+    }
+}
+
+void MainWindow::quitApplication(void)
+{
+    settings->setValue("geometry", QString(saveGeometry().toHex()));
+    settings->sync();
+
+    QApplication::quit();
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    if (ready) {
-        settings->setValue("geometry", QString(saveGeometry().toHex()));
-    }
+    windowGeometry = saveGeometry();
 
     QMainWindow::resizeEvent(event);
 }
 
-void MainWindow::on_textArea_textChanged()
+void MainWindow::toggleFullScreen(void)
 {
-    if (ready) {
-        settings->setValue("text", ui->textArea->toPlainText());
+    if (isFullScreen()) {
+        setWindowState(windowState() & ~Qt::WindowFullScreen);
+    } else {
+        setWindowState(windowState() | Qt::WindowFullScreen);
     }
 }
 
-void MainWindow::on_textArea_cursorPositionChanged()
+bool MainWindow::isAlreadyRunning(void)
 {
-    if (ready) {
-        QTextCursor currCursor = ui->textArea->textCursor();
-        int currCursorSelStart = currCursor.selectionStart();
-        int currCursorSelEnd = currCursor.selectionEnd();
+    const bool raiseExisting = true;
+    const bool anotherInstanceRunning = singleInstance->isAlreadyRunning(raiseExisting);
 
-        settings->setValue("cursor", currCursorSelStart);
-        settings->setValue("cursor_end", currCursorSelEnd);
-    }
+    return anotherInstanceRunning;
 }
